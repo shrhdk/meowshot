@@ -1,4 +1,4 @@
-package be.shiro.thetacat
+package be.shiro.meowshot
 
 import android.media.AudioAttributes
 import android.media.AudioManager
@@ -6,7 +6,6 @@ import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
-import org.theta4j.plugin.ExitStatus
 import org.theta4j.plugin.LEDTarget
 import org.theta4j.plugin.ThetaIntent
 import org.theta4j.plugin.ThetaPluginActivity
@@ -49,16 +48,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
             play()
         }
         return super.onKeyDown(keyCode, event)
-    }
-
-    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
-        if (event!!.keyCode == ThetaIntent.KEY_CODE_MODE && event.isLongPress) {
-            openMainCamera()
-            finishPlugin(ExitStatus.SUCCESS, "OK")
-            return false
-        }
-
-        return super.dispatchKeyEvent(event)
     }
 
     override fun onMeowRequest() {

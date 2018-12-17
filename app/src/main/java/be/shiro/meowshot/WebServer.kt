@@ -1,4 +1,4 @@
-package be.shiro.thetacat
+package be.shiro.meowshot
 
 import android.content.Context
 import fi.iki.elonen.NanoHTTPD
@@ -13,8 +13,10 @@ class WebServer(
             return serveIndexFile()
         } else if (session.method == Method.POST && session.uri == "/meow") {
             listener?.onMeowRequest()
+            return newFixedLengthResponse("OK")
         } else if (session.method == Method.POST && session.uri == "/take_picture") {
             listener?.onReleaseRequest()
+            return newFixedLengthResponse("OK")
         }
         return redirectToIndex()
     }

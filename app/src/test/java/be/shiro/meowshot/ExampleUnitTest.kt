@@ -1,4 +1,4 @@
-package be.shiro.thetacat
+package be.shiro.meowshot
 
 import org.junit.Test
 
