@@ -87,7 +87,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private fun takePicture() {
         executor.submit {
             val reqBody = """{"name":"camera.takePicture"}""".toByteArray()
-            val conn = URL("http://localhost:8080/osc/commands/execute").openConnection() as HttpURLConnection
+            val conn = URL("http://127.0.0.1:8080/osc/commands/execute").openConnection() as HttpURLConnection
             conn.apply {
                 setFixedLengthStreamingMode(reqBody.size)
                 doOutput = true
