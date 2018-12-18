@@ -1,12 +1,10 @@
 package be.shiro.meowshot
 
 import android.content.Context
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaRecorder
 import android.media.MediaRecorder.AudioEncoder
 import android.media.MediaRecorder.AudioSource
-import android.media.SoundPool
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -28,6 +26,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
     private var mWebServer: WebServer? = null
 
+    private var mSoundPlayer: SoundPlayer? = null
+
     private var mediaRecorder: MediaRecorder? = null
 
     private var soundFilePath: String? = null
@@ -37,7 +37,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         soundFilePath = "${filesDir}${File.separator}mySound.wav"
     }
 
@@ -50,6 +49,11 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         hideLED(LEDTarget.LED7)
         hideLED(LEDTarget.LED8)
 
+        mSoundPlayer = SoundPlayer(executor, applicationContext, R.raw.cat)
+        if (File(soundFilePath).exists()) {
+            mSoundPlayer!!.load(soundFilePath!!)
+        }
+
         mWebServer = WebServer(applicationContext, this)
         mWebServer!!.start()
     }
@@ -59,6 +63,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
         mWebServer!!.stop()
         mWebServer = null
+
+        mSoundPlayer = null
 
         executor.submit {
             // is Recording must be referenced from executor's thread.
@@ -100,38 +106,13 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         takePicture()
     }
 
-    private fun setVolumeMax() {
-        val audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        val maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVol, 0)
-    }
-
     private fun play() {
         executor.submit {
             if (isRecording) {
                 return@submit
             }
 
-            val attributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-
-            val soundPool = SoundPool.Builder()
-                .setAudioAttributes(attributes)
-                .setMaxStreams(1)
-                .build()
-
-            soundPool.setOnLoadCompleteListener { sp, id, _ ->
-                setVolumeMax()
-                sp.play(id, 1.0f, 1.0f, 1, 0, 1.0f)
-            }
-
-            if (File(soundFilePath).exists()) {
-                soundPool.load(soundFilePath, 1)
-            } else {
-                soundPool.load(this, R.raw.cat, 1)
-            }
+            mSoundPlayer!!.play()
         }
     }
 
@@ -139,6 +120,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         val file = File(soundFilePath)
         if (file.exists()) {
             file.delete()
+            mSoundPlayer!!.unload()
         }
         ring(PresetSound.SHUTTER_CLOSE)
     }
@@ -169,6 +151,9 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
         hideLED(LEDTarget.LED7)
         ring(PresetSound.MOVIE_STOP)
+
+        mSoundPlayer!!.load(soundFilePath!!)
+
         isRecording = false
     }
 
