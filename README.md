@@ -1,6 +1,6 @@
 # meowshot
 
-A plugin to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
+A THETA plug-in to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
 
 This plug-in has two commands.
 
@@ -29,7 +29,7 @@ In preparation.
 * Please use this plug-in after agreeing to this agreement.
 * This plug-in produces a loud sound. Please give consideration to the surrounding people.
 * We will not compensate for damages caused to users by using this plug-in at all
-* This plugin does not collect personal information.
+* This plug-in does not collect personal information.
 
 ## Credits
 
