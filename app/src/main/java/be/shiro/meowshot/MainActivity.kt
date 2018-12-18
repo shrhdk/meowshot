@@ -65,8 +65,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     }
 
     private fun play() {
-        setVolumeMax()
-
         val attributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)
             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -77,7 +75,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
             .setMaxStreams(1)
             .build()
 
-        soundPool.setOnLoadCompleteListener { sp, id, status ->
+        soundPool.setOnLoadCompleteListener { sp, id, _ ->
+            setVolumeMax()
             sp.play(id, 1.0f, 1.0f, 1, 0, 1.0f)
         }
 
