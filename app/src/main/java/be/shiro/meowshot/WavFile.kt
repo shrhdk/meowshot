@@ -4,10 +4,10 @@ import java.io.Closeable
 import java.io.RandomAccessFile
 
 class WavFile(
-    private val path: String
+    path: String
 ) : Closeable {
     companion object {
-        val SAMPLE_RATE = 8000
+        val SAMPLE_RATE = 44100
         val BITS_PER_SAMPLE = 16
     }
 
@@ -59,7 +59,11 @@ class WavFile(
 
     fun cutEnd(millis: Long) {
         val sizeToCut = RIFF_BYTE_RATE * millis / 1000
-        raf.setLength(raf.length() - sizeToCut)
+        var newSize = raf.length() - sizeToCut
+        if (newSize < 0) {
+            newSize = 0
+        }
+        raf.setLength(newSize)
         updateFileSize()
         updateDataSize()
     }

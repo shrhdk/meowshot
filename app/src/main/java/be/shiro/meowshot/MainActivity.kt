@@ -17,8 +17,12 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 class MainActivity : ThetaPluginActivity(), WebServer.Listener {
-    private val RECORD_START_MARGIN = 350L
-    private val RECORD_END_MARGIN = 350L
+    companion object {
+        val TAG = "MEOWSHOT"
+    }
+
+    private val RECORD_START_MARGIN = 500L
+    private val RECORD_END_MARGIN = 500L
 
     private val executor = Executors.newSingleThreadExecutor()
 

@@ -2,6 +2,8 @@ package be.shiro.meowshot
 
 import android.content.Context
 import android.media.*
+import android.media.audiofx.NoiseSuppressor
+import android.util.Log
 import org.theta4j.plugin.ThetaPluginActivity
 import java.io.File
 import java.util.concurrent.CountDownLatch
@@ -79,12 +81,19 @@ class SoundManager(
         wavFile = WavFile(soundFilePath)
 
         audioRecord = AudioRecord(
-            MediaRecorder.AudioSource.MIC,
+            MediaRecorder.AudioSource.VOICE_RECOGNITION,
             WavFile.SAMPLE_RATE,
             AudioFormat.CHANNEL_IN_MONO,
             AudioFormat.ENCODING_PCM_16BIT,
             bufferSize
         ).apply {
+            if (NoiseSuppressor.isAvailable()) {
+                Log.d(MainActivity.TAG, "Enable Noise Suppressor")
+                NoiseSuppressor.create(audioSessionId)
+            } else {
+                Log.d(MainActivity.TAG, "Noise Suppressor is not available")
+            }
+
             setRecordPositionUpdateListener(object : AudioRecord.OnRecordPositionUpdateListener {
                 override fun onMarkerReached(recorder: AudioRecord?) {
                     // ignore
@@ -96,7 +105,9 @@ class SoundManager(
                     if (sizeInShorts < 0) {
                         return
                     }
-                    wavFile!!.write(buf, sizeInShorts)
+                    synchronized(this@SoundManager) {
+                        wavFile?.write(buf, sizeInShorts)
+                    }
                 }
             })
             positionNotificationPeriod = bufferSize / 2;
@@ -112,6 +123,7 @@ class SoundManager(
             release()
             wavFile!!.cutEnd(endMargin)
             wavFile!!.close()
+            wavFile = null
             load()
         }
         audioRecord = null;
