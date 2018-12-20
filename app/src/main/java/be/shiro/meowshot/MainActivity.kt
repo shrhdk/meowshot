@@ -2,9 +2,6 @@ package be.shiro.meowshot
 
 import android.content.Context
 import android.media.AudioManager
-import android.media.MediaRecorder
-import android.media.MediaRecorder.AudioEncoder
-import android.media.MediaRecorder.AudioSource
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -26,18 +23,13 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
     private var mWebServer: WebServer? = null
 
-    private var mSoundPlayer: SoundPlayer? = null
+    private var mSoundManager: SoundManager? = null
 
-    private var mediaRecorder: MediaRecorder? = null
-
-    private var soundFilePath: String? = null
-
-    private var isRecording: Boolean = false // must be referenced from executor's thread.
+    // Activity Events
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        soundFilePath = "${filesDir}${File.separator}mySound.wav"
     }
 
     override fun onResume() {
@@ -49,9 +41,10 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         hideLED(LEDTarget.LED7)
         hideLED(LEDTarget.LED8)
 
-        mSoundPlayer = SoundPlayer(executor, applicationContext, R.raw.cat)
-        if (File(soundFilePath).exists()) {
-            mSoundPlayer!!.load(soundFilePath!!)
+        val soundFilePath = "${filesDir}${File.separator}mySound.wav"
+        mSoundManager = SoundManager(applicationContext, R.raw.cat, soundFilePath)
+        executor.submit {
+            mSoundManager!!.initialize()
         }
 
         mWebServer = WebServer(applicationContext, this)
@@ -64,26 +57,17 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         mWebServer!!.stop()
         mWebServer = null
 
-        mSoundPlayer = null
-
         executor.submit {
-            // is Recording must be referenced from executor's thread.
-            if (isRecording) {
-                stopRecord()
-            }
+            mSoundManager!!.stopRecord()
+            mSoundManager = null
         }
     }
 
+    // Key Events
+
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KEY_CODE_SHUTTER && event.isLongPress) {
-            executor.submit {
-                // recording method must be invoked from executor's thread.
-                if (isRecording) {
-                    stopRecord()
-                } else {
-                    startRecord()
-                }
-            }
+            startStopRecord()
             return true // cancel onKeyUp event
         } else if (keyCode == KEY_CODE_WIRELESS) {
             deleteSoundFile()
@@ -98,6 +82,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         return super.onKeyUp(keyCode, event)
     }
 
+    // Web Server Events
+
     override fun onMeowRequest() {
         play()
     }
@@ -106,60 +92,48 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         takePicture()
     }
 
+    // Controlling Sound
+
     private fun play() {
         executor.submit {
-            if (isRecording) {
-                return@submit
+            if (!mSoundManager!!.isRecording) {
+                mSoundManager!!.play()
             }
+        }
+    }
 
-            mSoundPlayer!!.play()
+    private fun startStopRecord() {
+        executor.submit {
+            if (mSoundManager!!.isRecording) {
+                // stop
+                mSoundManager!!.stopRecord()
+                hideLED(LEDTarget.LED7)
+                ring(PresetSound.MOVIE_STOP)
+            } else {
+                // start
+                ring(PresetSound.MOVIE_START)
+                Thread.sleep(RECORD_START_DELAY) // For avoid recording sound effect
+                showLED(LEDTarget.LED7)
+                (getSystemService(Context.AUDIO_SERVICE) as AudioManager).run {
+                    setParameters(ThetaAudio.RIC_MIC_DISABLE_B_FORMAT)
+                }
+                mSoundManager!!.startRecord()
+            }
         }
     }
 
     private fun deleteSoundFile() {
-        val file = File(soundFilePath)
-        if (file.exists()) {
-            file.delete()
-            mSoundPlayer!!.unload()
+        executor.submit {
+            mSoundManager!!.deleteFile()
+            ring(PresetSound.SHUTTER_CLOSE)
         }
-        ring(PresetSound.SHUTTER_CLOSE)
     }
 
-    private fun startRecord() {
-        isRecording = true
-        ring(PresetSound.MOVIE_START)
-        Thread.sleep(RECORD_START_DELAY) // For avoid recording sound effect
-        showLED(LEDTarget.LED7)
-
-        val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        audioManager.setParameters(ThetaAudio.RIC_MIC_DISABLE_B_FORMAT)
-
-        mediaRecorder = MediaRecorder()
-        mediaRecorder!!.setAudioSource(AudioSource.MIC)
-        mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-        mediaRecorder!!.setAudioEncoder(AudioEncoder.DEFAULT)
-        mediaRecorder!!.setOutputFile(soundFilePath!!)
-        mediaRecorder!!.prepare()
-        mediaRecorder!!.start()
-    }
-
-    private fun stopRecord() {
-        mediaRecorder!!.stop();
-        mediaRecorder!!.reset();
-        mediaRecorder!!.release();
-        mediaRecorder = null;
-
-        hideLED(LEDTarget.LED7)
-        ring(PresetSound.MOVIE_STOP)
-
-        mSoundPlayer!!.load(soundFilePath!!)
-
-        isRecording = false
-    }
+    // Controlling Camera
 
     private fun takePicture() {
         executor.submit {
-            if (isRecording) {
+            if (mSoundManager!!.isRecording) {
                 return@submit
             }
 
