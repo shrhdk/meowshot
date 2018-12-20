@@ -1,10 +1,7 @@
 package be.shiro.meowshot
 
 import android.content.Context
-import android.media.AudioAttributes
-import android.media.AudioManager
-import android.media.MediaRecorder
-import android.media.SoundPool
+import android.media.*
 import org.theta4j.plugin.ThetaPluginActivity
 import java.io.File
 import java.util.concurrent.CountDownLatch
@@ -31,7 +28,15 @@ class SoundManager(
         .setMaxStreams(1)
         .build()
 
-    private var mediaRecorder: MediaRecorder? = null
+    private val bufferSize = android.media.AudioRecord.getMinBufferSize(
+        WavFile.SAMPLE_RATE,
+        AudioFormat.CHANNEL_IN_MONO,
+        AudioFormat.ENCODING_PCM_16BIT
+    )
+
+    private var audioRecord: AudioRecord? = null
+
+    private var wavFile: WavFile? = null
 
     private fun setSpeakerVolumeMax() {
         val audioManager = context.getSystemService(ThetaPluginActivity.AUDIO_SERVICE) as AudioManager
@@ -65,26 +70,50 @@ class SoundManager(
 
     @Synchronized
     fun startRecord() {
+        if (isRecording) {
+            throw IllegalStateException("SoundManager is recording. Call stopRecord method before startRecord method.")
+        }
+
         isRecording = true
-        mediaRecorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.DEFAULT)
-            setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-            setOutputFile(soundFilePath)
-            prepare()
-            start()
+
+        wavFile = WavFile(soundFilePath)
+
+        audioRecord = AudioRecord(
+            MediaRecorder.AudioSource.MIC,
+            WavFile.SAMPLE_RATE,
+            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.ENCODING_PCM_16BIT,
+            bufferSize
+        ).apply {
+            setRecordPositionUpdateListener(object : AudioRecord.OnRecordPositionUpdateListener {
+                override fun onMarkerReached(recorder: AudioRecord?) {
+                    // ignore
+                }
+
+                override fun onPeriodicNotification(recorder: AudioRecord) {
+                    val buf = ShortArray(bufferSize / 2)
+                    val sizeInShorts = recorder.read(buf, 0, buf.size)
+                    if (sizeInShorts < 0) {
+                        return
+                    }
+                    wavFile!!.write(buf, sizeInShorts)
+                }
+            })
+            positionNotificationPeriod = bufferSize / 2;
+            startRecording()
         }
     }
 
     @Synchronized
     fun stopRecord() {
-        mediaRecorder?.run {
+        audioRecord?.run {
+            setRecordPositionUpdateListener(null)
             stop()
-            reset()
             release()
+            wavFile!!.close()
             load()
         }
-        mediaRecorder = null;
+        audioRecord = null;
         isRecording = false
     }
 
