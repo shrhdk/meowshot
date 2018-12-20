@@ -105,11 +105,12 @@ class SoundManager(
     }
 
     @Synchronized
-    fun stopRecord() {
+    fun stopRecord(endMargin: Long) {
         audioRecord?.run {
             setRecordPositionUpdateListener(null)
             stop()
             release()
+            wavFile!!.cutEnd(endMargin)
             wavFile!!.close()
             load()
         }

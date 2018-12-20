@@ -17,7 +17,8 @@ import java.net.URL
 import java.util.concurrent.Executors
 
 class MainActivity : ThetaPluginActivity(), WebServer.Listener {
-    private val RECORD_START_DELAY = 300L
+    private val RECORD_START_MARGIN = 350L
+    private val RECORD_END_MARGIN = 350L
 
     private val executor = Executors.newSingleThreadExecutor()
 
@@ -58,7 +59,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         mWebServer = null
 
         executor.submit {
-            mSoundManager!!.stopRecord()
+            mSoundManager!!.stopRecord(RECORD_END_MARGIN)
             mSoundManager = null
         }
     }
@@ -106,13 +107,13 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         executor.submit {
             if (mSoundManager!!.isRecording) {
                 // stop
-                mSoundManager!!.stopRecord()
+                mSoundManager!!.stopRecord(RECORD_END_MARGIN)
                 hideLED(LEDTarget.LED7)
                 ring(PresetSound.MOVIE_STOP)
             } else {
                 // start
                 ring(PresetSound.MOVIE_START)
-                Thread.sleep(RECORD_START_DELAY) // For avoid recording sound effect
+                Thread.sleep(RECORD_START_MARGIN) // For avoid recording sound effect
                 showLED(LEDTarget.LED7)
                 (getSystemService(Context.AUDIO_SERVICE) as AudioManager).run {
                     setParameters(ThetaAudio.RIC_MIC_DISABLE_B_FORMAT)

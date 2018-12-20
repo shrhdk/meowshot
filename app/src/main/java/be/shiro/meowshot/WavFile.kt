@@ -57,6 +57,13 @@ class WavFile(
         updateData2Size()
     }
 
+    fun cutEnd(millis: Long) {
+        val sizeToCut = RIFF_BYTE_RATE * millis / 1000
+        raf.setLength(raf.length() - sizeToCut)
+        updateFileSize()
+        updateData2Size()
+    }
+
     override fun close() {
         raf.close()
     }
