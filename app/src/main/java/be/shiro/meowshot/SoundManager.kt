@@ -6,29 +6,17 @@ import android.media.audiofx.NoiseSuppressor
 import android.util.Log
 import org.theta4j.plugin.ThetaPluginActivity
 import java.io.File
-import java.util.concurrent.CountDownLatch
+
 
 class SoundManager(
     private val context: Context,
     private val resource: Int,
     private val soundFilePath: String
 ) {
+    private var mMediaPlayer: MediaPlayer? = null
+
     var isRecording: Boolean = false
         @Synchronized get
-
-    private var defaultSoundID: Int? = null
-
-    private var soundID: Int? = null
-
-    private val soundPool = SoundPool.Builder()
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build()
-        )
-        .setMaxStreams(1)
-        .build()
 
     private val bufferSize = android.media.AudioRecord.getMinBufferSize(
         WavFile.SAMPLE_RATE,
@@ -47,27 +35,43 @@ class SoundManager(
     }
 
     @Synchronized
-    fun initialize() {
-        loadDefault()
-        if (File(soundFilePath).exists()) {
-            load()
-        }
-    }
-
-    @Synchronized
     fun play() {
-        if (defaultSoundID == null) {
-            throw IllegalStateException("Call initialize method first")
-        }
-
         if (isRecording) {
             throw IllegalStateException("SoundManager is recording. Call stopRecord method before play method.")
         }
 
+        stopPlay()
+
         setSpeakerVolumeMax()
 
-        val id = soundID ?: defaultSoundID!!
-        soundPool.play(id, 1.0f, 1.0f, 1, 0, 1.0f)
+        mMediaPlayer = if (File(soundFilePath).exists()) {
+            MediaPlayer().apply {
+                setDataSource(soundFilePath)
+                prepare()
+            }
+        } else {
+            MediaPlayer.create(context, resource)
+        }.apply {
+            setVolume(1.0f, 1.0f)
+            setOnCompletionListener {
+                release()
+                mMediaPlayer = null
+            }
+            start()
+        }
+    }
+
+    @Synchronized
+    fun stopPlay() {
+        if (mMediaPlayer == null) {
+            Log.d("MediaPlayer", "is null")
+            return
+        }
+        if (mMediaPlayer!!.isPlaying) {
+            mMediaPlayer!!.stop()
+        }
+        mMediaPlayer!!.release()
+        mMediaPlayer = null
     }
 
     @Synchronized
@@ -75,6 +79,8 @@ class SoundManager(
         if (isRecording) {
             throw IllegalStateException("SoundManager is recording. Call stopRecord method before startRecord method.")
         }
+
+        stopPlay()
 
         isRecording = true
 
@@ -121,6 +127,8 @@ class SoundManager(
             return
         }
 
+        stopPlay()
+
         audioRecord!!.run {
             setRecordPositionUpdateListener(null)
             stop()
@@ -128,7 +136,6 @@ class SoundManager(
             wavFile!!.cutEnd(endMargin)
             wavFile!!.close()
             wavFile = null
-            load()
         }
         audioRecord = null
         isRecording = false
@@ -136,13 +143,10 @@ class SoundManager(
 
     @Synchronized
     fun deleteFile() {
+        stopPlay()
+
         if (isRecording) {
             throw IllegalStateException("SoundManager is recording. Call stopRecord method before deleteFile method.")
-        }
-
-        if (soundID != null) {
-            soundPool.unload(soundID!!)
-            soundID = null
         }
 
         File(soundFilePath).run {
@@ -150,27 +154,5 @@ class SoundManager(
                 delete()
             }
         }
-    }
-
-    private fun loadDefault() {
-        val latch = CountDownLatch(1)
-        soundPool.setOnLoadCompleteListener { _, _, _ ->
-            latch.countDown()
-        }
-        defaultSoundID = soundPool.load(context, resource, 1)
-        latch.await()
-    }
-
-    private fun load() {
-        if (soundID != null) {
-            soundPool.unload(soundID!!)
-        }
-
-        val latch = CountDownLatch(1)
-        soundPool.setOnLoadCompleteListener { _, _, _ ->
-            latch.countDown()
-        }
-        soundID = soundPool.load(soundFilePath, 1)
-        latch.await()
     }
 }

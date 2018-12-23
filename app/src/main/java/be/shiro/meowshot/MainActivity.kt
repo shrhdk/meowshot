@@ -54,9 +54,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
         val soundFilePath = "${filesDir}${File.separator}mySound.wav"
         mSoundManager = SoundManager(applicationContext, R.raw.cat, soundFilePath)
-        executor.submit {
-            mSoundManager!!.initialize()
-        }
 
         mWebServer = WebServer(applicationContext, this)
         mWebServer!!.start()
