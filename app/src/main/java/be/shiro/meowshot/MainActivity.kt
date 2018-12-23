@@ -14,6 +14,7 @@ import org.theta4j.plugin.ThetaPluginActivity
 import java.io.File
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.*
 import java.util.concurrent.Executors
 
 class MainActivity : ThetaPluginActivity(), WebServer.Listener {
@@ -23,8 +24,13 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
     private val RECORD_START_MARGIN = 500L
     private val RECORD_END_MARGIN = 500L
+    private val RECORD_MAX_TIME = 15_000L
 
     private val executor = Executors.newSingleThreadExecutor()
+
+    private val timer = Timer()
+
+    private var mRecordTimeoutTask: TimerTask? = null
 
     private var mWebServer: WebServer? = null
 
@@ -110,12 +116,15 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private fun startStopRecord() {
         executor.submit {
             if (mSoundManager!!.isRecording) {
-                // stop
+                // stop timeout timer
+                mRecordTimeoutTask?.cancel()
+
+                // stop record
                 mSoundManager!!.stopRecord(RECORD_END_MARGIN)
                 hideLED(LEDTarget.LED7)
                 ring(PresetSound.MOVIE_STOP)
             } else {
-                // start
+                // start record
                 ring(PresetSound.MOVIE_START)
                 Thread.sleep(RECORD_START_MARGIN) // For avoid recording sound effect
                 showLED(LEDTarget.LED7)
@@ -123,6 +132,16 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
                     setParameters(ThetaAudio.RIC_MIC_DISABLE_B_FORMAT)
                 }
                 mSoundManager!!.startRecord()
+
+                // start timeout timer
+                mRecordTimeoutTask = object : TimerTask() {
+                    override fun run() {
+                        executor.submit {
+                            startStopRecord()
+                        }
+                    }
+                }
+                timer.schedule(mRecordTimeoutTask!!, RECORD_MAX_TIME)
             }
         }
     }

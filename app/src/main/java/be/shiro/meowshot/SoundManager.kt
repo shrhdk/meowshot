@@ -117,7 +117,11 @@ class SoundManager(
 
     @Synchronized
     fun stopRecord(endMargin: Long) {
-        audioRecord?.run {
+        if (!isRecording) {
+            return
+        }
+
+        audioRecord!!.run {
             setRecordPositionUpdateListener(null)
             stop()
             release()
