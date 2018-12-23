@@ -4,7 +4,6 @@ import android.content.Context
 import android.media.*
 import android.media.audiofx.NoiseSuppressor
 import android.util.Log
-import org.theta4j.plugin.ThetaPluginActivity
 import java.io.File
 
 
@@ -28,12 +27,6 @@ class SoundManager(
 
     private var wavFile: WavFile? = null
 
-    private fun setSpeakerVolumeMax() {
-        val audioManager = context.getSystemService(ThetaPluginActivity.AUDIO_SERVICE) as AudioManager
-        val maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, maxVol, 0)
-    }
-
     @Synchronized
     fun play() {
         if (isRecording) {
@@ -42,15 +35,25 @@ class SoundManager(
 
         stopPlay()
 
-        setSpeakerVolumeMax()
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING)
+        audioManager.setStreamVolume(AudioManager.STREAM_RING, maxVol, 0)
+
+        val attributes = AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setLegacyStreamType(AudioManager.STREAM_RING)
+            .build()
 
         mMediaPlayer = if (File(soundFilePath).exists()) {
             MediaPlayer().apply {
+                setAudioAttributes(attributes)
                 setDataSource(soundFilePath)
                 prepare()
             }
         } else {
-            MediaPlayer.create(context, resource)
+            val sessionID = audioManager.generateAudioSessionId()
+            MediaPlayer.create(context, resource, attributes, sessionID)
         }.apply {
             setVolume(1.0f, 1.0f)
             setOnCompletionListener {
