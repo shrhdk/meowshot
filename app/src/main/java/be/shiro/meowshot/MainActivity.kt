@@ -175,7 +175,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
             }
             if (conn.responseCode != 200) {
                 Log.e(
-                    "THETA_CAT",
+                    TAG,
                     "failed to execute takePicture command : ${conn.responseCode} ${conn.errorStream.reader().readText()}"
                 )
             }
