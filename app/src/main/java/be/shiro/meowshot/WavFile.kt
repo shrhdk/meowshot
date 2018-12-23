@@ -11,6 +11,7 @@ class WavFile(
         val BITS_PER_SAMPLE = 16
     }
 
+    private val HEADER_SIZE = 44L
     // RIFF Header
     private val RIFF_CHUNK_ID = "RIFF"
     private val RIFF_CHUNK_SIZE: Int = 0       // Dummy
@@ -60,8 +61,8 @@ class WavFile(
     fun cutEnd(millis: Long) {
         val sizeToCut = RIFF_BYTE_RATE * millis / 1000
         var newSize = raf.length() - sizeToCut
-        if (newSize < 0) {
-            newSize = 0
+        if (newSize < HEADER_SIZE) {
+            newSize = HEADER_SIZE
         }
         raf.setLength(newSize)
         updateFileSize()
