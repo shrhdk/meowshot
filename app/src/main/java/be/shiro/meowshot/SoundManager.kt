@@ -110,7 +110,7 @@ class SoundManager(
                     }
                 }
             })
-            positionNotificationPeriod = bufferSize / 2;
+            positionNotificationPeriod = bufferSize / 2
             startRecording()
         }
     }
@@ -126,7 +126,7 @@ class SoundManager(
             wavFile = null
             load()
         }
-        audioRecord = null;
+        audioRecord = null
         isRecording = false
     }
 
