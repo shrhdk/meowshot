@@ -12,6 +12,9 @@ class WavFile(
     }
 
     private val HEADER_SIZE = 44L
+    private val CHUNK_SIZE_POS = 4L
+    private val SUB_CHUNK2_SIZE_POS = 40L
+
     // RIFF Header
     private val RIFF_CHUNK_ID = "RIFF"
     private val RIFF_CHUNK_SIZE: Int = 0       // Dummy
@@ -79,13 +82,13 @@ class WavFile(
 
     private fun updateFileSize() {
         val fileSize = (raf.length() - 8).toInt();
-        raf.seek(4)
+        raf.seek(CHUNK_SIZE_POS)
         raf.write(littleEndian(fileSize))
     }
 
     private fun updateDataSize() {
-        val dataSize = (raf.length() - 44).toInt()
-        raf.seek(40)
+        val dataSize = (raf.length() - HEADER_SIZE).toInt()
+        raf.seek(SUB_CHUNK2_SIZE_POS)
         raf.write(littleEndian(dataSize))
     }
 
