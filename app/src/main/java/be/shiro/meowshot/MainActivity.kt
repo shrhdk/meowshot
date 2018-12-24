@@ -76,7 +76,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KEY_CODE_SHUTTER && event.isLongPress) {
             startStopRecord()
-            return true // cancel onKeyUp event
         } else if (keyCode == KEY_CODE_WIRELESS) {
             deleteSoundFile()
         }
