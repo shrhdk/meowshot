@@ -23,7 +23,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     }
 
     private val RECORD_START_MARGIN = 500L
-    private val RECORD_END_MARGIN = 500L
+    private val RECORD_END_MARGIN = 600L
     private val RECORD_MAX_TIME = 15_000L
 
     private val executor = Executors.newSingleThreadExecutor()
