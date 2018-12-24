@@ -2,10 +2,13 @@
 
 A THETA plug-in to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
 
-This plug-in has two commands.
+Get a cat's attension by a voice, and take a picture.
 
-* Take a 360 picture
-* Play a cute cat voice from a speaker in THETA.
+This plug-in has three commands.
+
+* Take a 360&deg; picture remotely.
+* Play a cute cat voice from a speaker in THETA remotely.
+* Record your voice using a microphone in THETA and use it instead of cat voice.
 
 You can execute these commands remotely using your smartphone.
 
