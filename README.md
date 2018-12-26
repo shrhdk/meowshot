@@ -34,7 +34,7 @@ In preparation.
 * We will not compensate for damages caused to users by using this plug-in at all
 * This plug-in does not collect personal information.
 
-## Credits
+## Credit
 
 * The cat voice data is  created by [ポケットサウンド/効果音素材](https://pocket-se.info/archives/81/).
 * The app icons is created by [ICOOON MONO](http://icooon-mono.com/).
