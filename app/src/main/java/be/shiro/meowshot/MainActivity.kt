@@ -61,6 +61,9 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onPause() {
         super.onPause()
 
+        mTimerTask?.cancel()
+        mTimerTask = null
+
         mWebServer!!.stop()
         mWebServer = null
 
