@@ -31,5 +31,7 @@
 
 ## クレジット
 
+* [NanoHTTPD](https://github.com/NanoHttpd/nanohttpd) Copyright (c) 2012-2013 by Paul S. Hawke, 2001,2005-2013 by Jarno Elonen, 2010 by Konstantinos Togias All rights reserved.
+* [theta-plugin-sdk](https://github.com/theta4j/theta-plugin-sdk) Copyright 2018 theta4j project
 * 猫の鳴き声データは [ポケットサウンド/効果音素材](https://pocket-se.info/) 様の [【効果音】猫の鳴き声＃１１](https://pocket-se.info/archives/81/) を利用しています。
 * アイコンは [ICOOON MONO](http://icooon-mono.com/) 様の素材を利用しています。
