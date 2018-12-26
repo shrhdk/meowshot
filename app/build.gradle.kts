@@ -31,7 +31,6 @@ android {
 
 dependencies {
     implementation(kotlin("stdlib-jdk8", KotlinCompilerVersion.VERSION))
-    implementation("com.android.support.constraint", "constraint-layout", "1.1.3")
     implementation("org.theta4j", "theta-plugin-sdk", "0.0.4")
     implementation("org.nanohttpd", "nanohttpd", "2.2.0")
 
