@@ -16,6 +16,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
+import kotlin.concurrent.schedule
 
 class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     companion object {
@@ -28,9 +29,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
     private val executor = Executors.newSingleThreadExecutor()
 
-    private val timer = Timer()
-
-    private var mRecordTimeoutTask: TimerTask? = null
+    private var mTimerTask: TimerTask? = null
 
     private var mWebServer: WebServer? = null
 
@@ -113,7 +112,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         executor.submit {
             if (mSoundManager!!.isRecording) {
                 // stop timeout timer
-                mRecordTimeoutTask?.cancel()
+                mTimerTask?.cancel()
+                mTimerTask = null
 
                 // stop record
                 mSoundManager!!.stopRecord(RECORD_END_MARGIN)
@@ -129,15 +129,12 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
                 }
                 mSoundManager!!.startRecord()
 
-                // start timeout timer
-                mRecordTimeoutTask = object : TimerTask() {
-                    override fun run() {
-                        executor.submit {
-                            startStopRecord()
-                        }
+                // start timeout task
+                mTimerTask = Timer().schedule(RECORD_MAX_TIME) {
+                    executor.submit {
+                        startStopRecord()
                     }
                 }
-                timer.schedule(mRecordTimeoutTask!!, RECORD_MAX_TIME)
             }
         }
     }
