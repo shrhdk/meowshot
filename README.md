@@ -2,7 +2,7 @@
 
 A THETA plug-in to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
 
-Get a cat's attension by a voice, and take a picture.
+Get a cat's attention by a voice, and take a picture.
 
 This plug-in has three commands.
 
