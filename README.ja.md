@@ -1,5 +1,7 @@
 # Meow Shot
 
+![Meow Shot](images/title.png)
+
 猫ちゃん撮影を支援する THETA プラグイン ([English version is here](./))
 
 スマホから遠隔でシャッターを切る機能と、猫の鳴き声を再生する機能があります。
