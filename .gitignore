@@ -1,5 +1,6 @@
 *.iml
 .gradle
+gradle.properties
 /local.properties
 /.idea/caches/build_file_checksums.ser
 /.idea/libraries
@@ -9,3 +10,7 @@
 /build
 /captures
 .externalNativeBuild
+
+# Signing
+meowshot.keystore
+credentials.sh

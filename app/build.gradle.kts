@@ -39,6 +39,19 @@ android {
     aaptOptions {
         noCompress("html")
     }
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("meowshot.keystore")
+            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("ANDROID_KEYSTORE_ALIAS")
+            keyPassword = System.getenv("ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
+        }
+    }
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+        }
+    }
 }
 
 dependencies {
