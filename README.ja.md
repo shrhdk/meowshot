@@ -1,4 +1,4 @@
-# meowshot
+# Meow Shot
 
 猫ちゃん撮影を支援する THETA プラグイン ([English version is here](./))
 
