@@ -32,7 +32,7 @@ class SoundManager(
     var isRecording: Boolean = false
         @Synchronized get
 
-    private val bufferSize = android.media.AudioRecord.getMinBufferSize(
+    private val bufferSize = AudioRecord.getMinBufferSize(
         WavFile.SAMPLE_RATE,
         AudioFormat.CHANNEL_IN_MONO,
         AudioFormat.ENCODING_PCM_16BIT
