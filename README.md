@@ -1,6 +1,6 @@
-# Meow Shot
+# Meow Shot!
 
-![Meow Shot](images/title.png)
+![Meow Shot!](images/title.png)
 
 A THETA plug-in to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
 
@@ -20,7 +20,7 @@ In preparation.
 
 ## Usage
 
-1. Set up to use **Meow Shot** plug-in. See [User Guide](https://support.theta360.com/en/manual/v/content/plugin/plugin_02.html).
+1. Set up to use **Meow Shot!** plug-in. See [User Guide](https://support.theta360.com/en/manual/v/content/plugin/plugin_02.html).
 2. Connect the THETA to a smartphone via Wi-Fi.
 3. Long press mode button to start the plug-in. (Success if LED is White.)
 4. Open plug-in's Web UI from the THETA app.

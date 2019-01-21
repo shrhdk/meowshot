@@ -1,6 +1,6 @@
-# Meow Shot
+# Meow Shot!
 
-![Meow Shot](images/title.png)
+![Meow Shot!](images/title.png)
 
 猫ちゃん撮影を支援する THETA プラグイン ([English version is here](./))
 
@@ -17,7 +17,7 @@
 
 ## 使い方
 
-1. meowshot プラグインが起動するように設定する → [取扱説明書](https://support.theta360.com/ja/manual/v/content/plugin/plugin_02.html)
+1. Meow Shot! プラグインが起動するように設定する → [取扱説明書](https://support.theta360.com/ja/manual/v/content/plugin/plugin_02.html)
 2. THETA を Wi-Fi AP モードにしてスマホから接続する
 3. モードボタンを長押ししてプラグインを起動する (本体 LED が白く光れば OK)
 4. THETA アプリからプラグイン画面を開く
