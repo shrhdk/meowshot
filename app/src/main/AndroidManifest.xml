@@ -10,7 +10,7 @@
     <uses-feature android:name="com.theta360.receptor.webapi" android:version="2"/>
     <uses-feature android:name="com.theta360.receptor.mtpapi" android:version="1"/>
     <uses-feature android:name="com.theta360.receptor.bleapi" android:version="1"/>
-    <uses-feature android:name="com.theta360.receptor.plugin" android:version="1"/>
+    <uses-feature android:name="com.theta360.receptor.pluginapi" android:version="1"/>
 
     <application
             android:allowBackup="true"
