@@ -16,7 +16,11 @@ You don't need to install a smartphone app. Just need a web browser.
 
 ## How to Install
 
-In preparation.
+It is available on Plug-in Store.
+https://pluginstore.theta360.com/plugins/be.shiro.meowshot/
+
+See here for installation instruction.
+https://theta360.com/en/ricoh_plugins/#install
 
 ## Usage
 

@@ -13,7 +13,11 @@
 
 ## インストール方法
 
-準備中
+プラグインストアからインストールできます。
+https://pluginstore.theta360.com/plugins/be.shiro.meowshot/
+
+インストール方法については以下のページをご覧ください。
+https://theta360.com/ja/ricoh_plugins/#install
 
 ## 使い方
 
