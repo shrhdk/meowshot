@@ -2,10 +2,7 @@
 .gradle
 gradle.properties
 /local.properties
-/.idea/caches/build_file_checksums.ser
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
+/.idea/
 .DS_Store
 /build
 /captures
@@ -13,4 +10,3 @@ gradle.properties
 
 # Signing
 meowshot.keystore
-credentials.sh
