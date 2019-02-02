@@ -26,6 +26,7 @@ import org.theta4j.plugin.ThetaAudio
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_SHUTTER
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_WIRELESS
 import org.theta4j.plugin.ThetaPluginActivity
+import org.theta4j.webapi.Options.SHUTTER_VOLUME;
 import org.theta4j.webapi.Theta
 import java.io.File
 import java.util.*
@@ -44,6 +45,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private val executor = Executors.newSingleThreadExecutor()
 
     private val theta = Theta.createForPlugin()
+
+    private var backupVolume: Int = 0
 
     private var mTimerTask: TimerTask? = null
 
@@ -72,6 +75,10 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
         mWebServer = WebServer(applicationContext, this)
         mWebServer!!.start()
+
+        executor.submit {
+            backupVolume = theta.getOption(SHUTTER_VOLUME)
+        }
     }
 
     override fun onPause() {
@@ -117,8 +124,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         takePicture()
     }
 
-    // Controlling Sound
-
     private fun play() {
         executor.submit {
             if (!mSoundManager!!.isRecording) {
@@ -137,10 +142,10 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
                 // stop record
                 mSoundManager!!.stopRecord(RECORD_END_MARGIN)
                 hideLED(LEDTarget.LED7)
-                ring(PresetSound.MOVIE_STOP)
+                forceRing(PresetSound.MOVIE_STOP)
             } else {
                 // start record
-                ring(PresetSound.MOVIE_START)
+                forceRing(PresetSound.MOVIE_START)
                 Thread.sleep(RECORD_START_MARGIN) // For avoid recording sound effect
                 showLED(LEDTarget.LED7)
                 (getSystemService(Context.AUDIO_SERVICE) as AudioManager).run {
@@ -161,11 +166,9 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private fun deleteSoundFile() {
         executor.submit {
             mSoundManager!!.deleteFile()
-            ring(PresetSound.SHUTTER_CLOSE)
+            forceRing(PresetSound.SHUTTER_CLOSE)
         }
     }
-
-    // Controlling Camera
 
     private fun takePicture() {
         executor.submit {
@@ -175,5 +178,11 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
             theta.takePicture()
         }
+    }
+
+    private fun forceRing(sound: PresetSound) {
+        theta.setOption(SHUTTER_VOLUME, 100)
+        ring(sound)
+        theta.setOption(SHUTTER_VOLUME, backupVolume)
     }
 }
