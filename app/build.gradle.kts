@@ -42,9 +42,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = rootProject.file("meowshot.keystore")
-            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias = System.getenv("ANDROID_KEYSTORE_ALIAS")
-            keyPassword = System.getenv("ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
+            storePassword = properties["android.keystore.password"] as String
+            keyAlias = properties["android.keystore.alias"] as String
+            keyPassword = properties["android.keystore.private_key_password"] as String
         }
     }
     buildTypes {
