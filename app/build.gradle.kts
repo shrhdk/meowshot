@@ -47,11 +47,7 @@ android {
             keyPassword = properties["android.keystore.private_key_password"] as String
         }
     }
-    buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
-        }
-    }
+    buildTypes["release"].signingConfig = signingConfigs["release"]
 }
 
 dependencies {
