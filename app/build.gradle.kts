@@ -57,6 +57,7 @@ android {
 dependencies {
     implementation(kotlin("stdlib-jdk8", KotlinCompilerVersion.VERSION))
     implementation("org.theta4j", "theta-plugin-sdk", "0.0.4")
+    implementation("org.theta4j", "theta-web-api", "1.0.1")
     implementation("org.nanohttpd", "nanohttpd", "2.2.0")
 
     testImplementation("junit", "junit", "4.12")

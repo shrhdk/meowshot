@@ -19,7 +19,6 @@ package be.shiro.meowshot
 import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import org.theta4j.plugin.LEDTarget
 import org.theta4j.plugin.PresetSound
@@ -27,9 +26,8 @@ import org.theta4j.plugin.ThetaAudio
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_SHUTTER
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_WIRELESS
 import org.theta4j.plugin.ThetaPluginActivity
+import org.theta4j.webapi.Theta
 import java.io.File
-import java.net.HttpURLConnection
-import java.net.URL
 import java.util.*
 import java.util.concurrent.Executors
 import kotlin.concurrent.schedule
@@ -44,6 +42,8 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private val RECORD_MAX_TIME = 15_000L
 
     private val executor = Executors.newSingleThreadExecutor()
+
+    private val theta = Theta.createForPlugin()
 
     private var mTimerTask: TimerTask? = null
 
@@ -173,25 +173,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
                 return@submit
             }
 
-            val reqBody = """{"name":"camera.takePicture"}""".toByteArray()
-            val conn = URL("http://127.0.0.1:8080/osc/commands/execute").openConnection() as HttpURLConnection
-            conn.apply {
-                setFixedLengthStreamingMode(reqBody.size)
-                doOutput = true
-                requestMethod = "POST"
-                addRequestProperty("Content-Type", "application/json; charset=UTF-8")
-            }
-            conn.connect()
-            conn.outputStream.use {
-                it.write(reqBody)
-            }
-            if (conn.responseCode != 200) {
-                Log.e(
-                    TAG,
-                    "failed to execute takePicture command : ${conn.responseCode} ${conn.errorStream.reader().readText()}"
-                )
-            }
-            conn.disconnect()
+            theta.takePicture()
         }
     }
 }
