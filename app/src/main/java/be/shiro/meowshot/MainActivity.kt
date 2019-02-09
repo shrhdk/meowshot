@@ -106,8 +106,10 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onKeyLongPress(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KEY_CODE_SHUTTER && event.isLongPress) {
             startStopRecord()
+            return true
         } else if (keyCode == KEY_CODE_WIRELESS) {
             deleteSoundFile()
+            return true
         }
         return super.onKeyLongPress(keyCode, event)
     }
@@ -115,6 +117,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KEY_CODE_SHUTTER && !event.isCanceled) {
             play()
+            return true
         }
         return super.onKeyUp(keyCode, event)
     }
