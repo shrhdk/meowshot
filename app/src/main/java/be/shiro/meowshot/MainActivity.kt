@@ -20,13 +20,12 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Bundle
 import android.view.KeyEvent
-import org.theta4j.plugin.LEDTarget
-import org.theta4j.plugin.PresetSound
-import org.theta4j.plugin.ThetaAudio
+import org.theta4j.plugin.*
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_SHUTTER
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_WIRELESS
-import org.theta4j.plugin.ThetaPluginActivity
-import org.theta4j.webapi.Options.SHUTTER_VOLUME;
+import org.theta4j.webapi.NetworkType
+import org.theta4j.webapi.Options.NETWORK_TYPE
+import org.theta4j.webapi.Options.SHUTTER_VOLUME
 import org.theta4j.webapi.Theta
 import java.io.File
 import java.util.*
@@ -77,7 +76,13 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         mWebServer!!.start()
 
         executor.submit {
-            backupVolume = theta.getOption(SHUTTER_VOLUME)
+            val opts = theta.getOptions(SHUTTER_VOLUME, NETWORK_TYPE)
+
+            backupVolume = opts.get(SHUTTER_VOLUME)!!
+
+            if (opts.get(NETWORK_TYPE) == NetworkType.OFF) {
+                setWLanMode(WLanMode.AP)
+            }
         }
     }
 
