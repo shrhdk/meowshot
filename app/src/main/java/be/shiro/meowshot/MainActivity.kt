@@ -45,7 +45,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
 
     private val theta = Theta.createForPlugin()
 
-    private var backupVolume: Int = 0
+    private var mBackupVolume: Int = 0
 
     private var mTimerTask: TimerTask? = null
 
@@ -78,7 +78,7 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
         executor.submit {
             val opts = theta.getOptions(SHUTTER_VOLUME, NETWORK_TYPE)
 
-            backupVolume = opts.get(SHUTTER_VOLUME)!!
+            mBackupVolume = opts.get(SHUTTER_VOLUME)!!
 
             if (opts.get(NETWORK_TYPE) == NetworkType.OFF) {
                 setWLanMode(WLanMode.AP)
@@ -191,6 +191,6 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     private fun forceRing(sound: PresetSound) {
         theta.setOption(SHUTTER_VOLUME, 100)
         ring(sound)
-        theta.setOption(SHUTTER_VOLUME, backupVolume)
+        theta.setOption(SHUTTER_VOLUME, mBackupVolume)
     }
 }
