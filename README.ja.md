@@ -1,6 +1,6 @@
 # Meow Shot!
 
-![Meow Shot!](images/title.png)
+[![Meow Shot!](images/title.png)](https://pluginstore.theta360.com/plugins/be.shiro.meowshot/)
 
 猫ちゃん撮影を支援する THETA プラグイン ([English version is here](https://github.com/shrhdk/meowshot))
 

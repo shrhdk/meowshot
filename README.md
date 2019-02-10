@@ -1,6 +1,6 @@
 # Meow Shot!
 
-![Meow Shot!](images/title.png)
+[![Meow Shot!](images/title.png)](https://pluginstore.theta360.com/plugins/be.shiro.meowshot/)
 
 A THETA plug-in to support cat-shooting. ([日本語の説明はこちら](README.ja.md))
 
