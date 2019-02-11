@@ -26,6 +26,8 @@ https://theta360.com/ja/ricoh_plugins/#install
 3. モードボタンを長押ししてプラグインを起動する (本体 LED が白く光れば OK)
 4. THETA アプリからプラグイン画面を開く
 
+Android 9 の端末から Web UI を開けない場合は [Web UI ブラウザ for THETA](https://play.google.com/store/apps/details?id=be.shiro.theta.webui) をお試しいただくか、モバイルネットワークを無効にしてみてください。
+
 ![Web UI を開く](images/open_web_ui.ja.png)
 
 ## 利用規約

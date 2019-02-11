@@ -29,6 +29,8 @@ https://theta360.com/en/ricoh_plugins/#install
 3. Long press mode button to start the plug-in. (Success if LED is White.)
 4. Open plug-in's Web UI from the THETA app.
 
+When you can't open the Web UI from the Android 9 device, Please try [Web UI Browser for THETA](https://play.google.com/store/apps/details?id=be.shiro.theta.webui), or disable the cellular network.
+
 ![Open Web UI](images/open_web_ui.png)
 
 ## Terms of Use
