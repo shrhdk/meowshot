@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-import org.jetbrains.kotlin.config.KotlinCompilerVersion;
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import java.util.*
 
 plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("android.extensions")
+}
+
+val props = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
 }
 
 android {
@@ -42,9 +47,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = rootProject.file("meowshot.keystore")
-            storePassword = properties["android.keystore.password"] as String
-            keyAlias = properties["android.keystore.alias"] as String
-            keyPassword = properties["android.keystore.private_key_password"] as String
+            storePassword = props["android.keystore.password"] as String
+            keyAlias = props["android.keystore.alias"] as String
+            keyPassword = props["android.keystore.private_key_password"] as String
         }
     }
     buildTypes["release"].signingConfig = signingConfigs["release"]
