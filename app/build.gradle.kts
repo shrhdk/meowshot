@@ -59,5 +59,5 @@ dependencies {
     implementation(kotlin("stdlib-jdk8", KotlinCompilerVersion.VERSION))
     implementation("org.theta4j", "theta-plugin-sdk", "0.0.4")
     implementation("org.theta4j", "theta-web-api", "1.2.2")
-    implementation("org.nanohttpd", "nanohttpd", "2.2.0")
+    implementation("org.nanohttpd", "nanohttpd", "2.3.1")
 }
