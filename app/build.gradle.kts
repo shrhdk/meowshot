@@ -33,8 +33,8 @@ android {
         applicationId = "be.shiro.meowshot"
         minSdkVersion(25)
         targetSdkVersion(28)
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = 2
+        versionName = "1.0.1"
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
