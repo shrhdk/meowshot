@@ -23,9 +23,9 @@ import android.view.KeyEvent
 import org.theta4j.plugin.*
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_SHUTTER
 import org.theta4j.plugin.ThetaIntent.KEY_CODE_WIRELESS
+import org.theta4j.webapi.CaptureMode
 import org.theta4j.webapi.NetworkType
-import org.theta4j.webapi.Options.NETWORK_TYPE
-import org.theta4j.webapi.Options.SHUTTER_VOLUME
+import org.theta4j.webapi.Options.*
 import org.theta4j.webapi.Theta
 import java.io.File
 import java.util.*
@@ -58,12 +58,15 @@ class MainActivity : ThetaPluginActivity(), WebServer.Listener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        executor.submit {
+            theta.setOption(CAPTURE_MODE, CaptureMode.IMAGE)
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        hideLED(LEDTarget.LED4)
         hideLED(LEDTarget.LED5)
         hideLED(LEDTarget.LED6)
         hideLED(LEDTarget.LED7)
